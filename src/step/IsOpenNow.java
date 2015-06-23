@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.BufferedReader;
 /**
  * Created by liupeijie on 西暦15/06/22.
  * 営業時間
@@ -26,27 +27,42 @@ public class IsOpenNow {
         return 9 <= hour && hour < 17;
     }
 
-    public static boolean fileOpen(){
+    public static String fileOpen(){
         try{
             File file = new File("/Users/liupeijie/kadai4/src/step/opentime.txt");
-            FileReader filereader = new FileReader(file);
 
-            int ch;
-            while((ch = filereader.read()) != -1){
-                System.out.print((char)ch);
-                //return ch;
+            if (checkBeforeReadFile(file)){
+                BufferedReader br = new BufferedReader(new FileReader(file));
+
+                String str[] = new String[100];
+                int i=0;
+                while((str[i] = br.readLine()) != null){
+                    System.out.println(i+1+"行目：");
+                    System.out.println(str[i]);
+                    i++;
+                    return str[i];
+                }
+
+                br.close();
+            }else{
+                System.out.println("ファイルが見つからないか開けません");
             }
-
-
-            filereader.close();
         }catch(FileNotFoundException e){
             System.out.println(e);
         }catch(IOException e){
             System.out.println(e);
         }
-        int i=1;
-        return i==1;
+        return "";
+    }
 
+    private static boolean checkBeforeReadFile(File file){
+        if (file.exists()){
+            if (file.isFile() && file.canRead()){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static boolean isOpenNow(){
