@@ -2,6 +2,8 @@ package step;
 
 import org.junit.Test;
 
+import java.util.Calendar;
+
 import static org.junit.Assert.*;
 
 /**
@@ -10,6 +12,8 @@ import static org.junit.Assert.*;
 public class IsOpenNowTest {
     @Test
     public void testisOpenNow(){
-        assertTrue(IsOpenNow.isOpenNow());
+        //assertTrue(IsOpenNow.isOpenNow(Calendar.MONDAY, 9));
+        //assertFalse(IsOpenNow.isOpenNow(Calendar.MONDAY, 8));
+        assertTrue(IsOpenNow.fileOpen());
     }
 }
