@@ -47,8 +47,13 @@ public class IsOpenNow {
                     if (dayOfWeek == close[i])  //check close day
                         return false;
                 }
-                return open[0] <= hour && hour < open[1];
-
+                for(i=0;open[i]!=0;i=i+2) {
+                    if(open[i] > open[i+1]){
+                        if(open[i] <= hour && hour <= 24)return true;
+                        if(0 <= hour && hour < open[i+1])return true;
+                    }
+                    if(open[i] <= hour && hour < open[i+1])return true;  //check open time
+                }
            }else{
                 System.out.println("ファイルが見つからないか開けません");
             }
@@ -73,9 +78,13 @@ public class IsOpenNow {
     public static int[] openHour(String str[]) {
         int i, k = 0;
         int openHour[] = new int[6];
+        for(i= 0;i < 6;i++){
+            openHour[i]=0;
+        }
         for (i = 0; str[i] != null; i++) {
             if (str[i].equals("open time")) {
                 int raw = i + 1;
+                System.out.println("open from");
                 while (str[raw].compareToIgnoreCase("close day") != 0) {
                     openHour[k] = Integer.parseInt(str[raw]);
                     System.out.println(openHour[k]);
@@ -97,6 +106,7 @@ public class IsOpenNow {
         }
         for(i =0;  str[i] != null;i++){
             if(str[i].equals("close day")){
+                System.out.println("close at these days:");
                 int raw = i+1;
                 int day = 0;
                 int q =0;
