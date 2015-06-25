@@ -17,27 +17,18 @@ import java.io.BufferedReader;
  *
  */
 
-
 public class IsOpenNow {
-
-    public static boolean isOpenNow() {
-        //get the time now
-        Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        return isOpenNow(dayOfWeek, hour);
-    }
-
+    //check if is open now
     public static boolean isOpenNow(int dayOfWeek, int hour){
         try{
             //file name
             File file = new File("/Users/liupeijie/kadai4/src/step/opentime.txt");
 
-            if (checkBeforeReadFile(file)){ //check if file exit
+            if (checkBeforeReadFile(file)){ //check if file exists
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String str[] = new String[100];
                 int i=0;
-                while((str[i] = br.readLine()) != null){   //read contant of fil
+                while((str[i] = br.readLine()) != null){   //read contents of fil
                      i++;
                 }
                 int close[]; int open[];
@@ -108,9 +99,9 @@ public class IsOpenNow {
             if(str[i].equals("close day")){
                 System.out.println("close at these days:");
                 int raw = i+1;
-                int day = 0;
+                int day;
                 int q =0;
-                while (str[raw]!=null) {
+                while (str[raw].compareToIgnoreCase("other") != 0) {
                     closeDayOfWeek = changeDays(str[raw]);
                     for(day=0;closeDayOfWeek[day]!=0;day++) {
                         closeDay[q]=closeDayOfWeek[day];
@@ -124,6 +115,13 @@ public class IsOpenNow {
         return closeDay;
     }
 
+    public static boolean isOpenNow() {
+        //get the time now
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        return isOpenNow(dayOfWeek, hour);
+    }
 
     //テキストの閉店日の情報を数字に変換
     public static int[] changeDays(String str){
