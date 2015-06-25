@@ -20,31 +20,36 @@ import java.io.BufferedReader;
 
 public class IsOpenNow {
 
-    public static boolean isOpenNow(int dayOfWeek, int hour){
-
-        if(dayOfWeek == Calendar.SUNDAY || dayOfWeek == Calendar.SATURDAY)
-            return false;
-        return 9 <= hour && hour < 17;
+    public static boolean isOpenNow() {
+        //get the time now
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        return isOpenNow(dayOfWeek, hour);
     }
 
-    public static String fileOpen(){
+    public static boolean isOpenNow(int dayOfWeek, int hour){
         try{
+            //file name
             File file = new File("/Users/liupeijie/kadai4/src/step/opentime.txt");
 
-            if (checkBeforeReadFile(file)){
+            if (checkBeforeReadFile(file)){ //check if file exit
                 BufferedReader br = new BufferedReader(new FileReader(file));
-
                 String str[] = new String[100];
                 int i=0;
-                while((str[i] = br.readLine()) != null){
-                    System.out.println(i+1+"行目：");
-                    System.out.println(str[i]);
-                    i++;
-                    return str[i];
+                while((str[i] = br.readLine()) != null){   //read contant of fil
+                     i++;
                 }
+                int close[]; int open[];
+                open = openHour(str);
+                close = close(str);
+                for(i=0;close[i]!=0;i++) {
+                    if (dayOfWeek == close[i])  //check close day
+                        return false;
+                }
+                return open[0] <= hour && hour < open[1];
 
-                br.close();
-            }else{
+           }else{
                 System.out.println("ファイルが見つからないか開けません");
             }
         }catch(FileNotFoundException e){
@@ -52,7 +57,7 @@ public class IsOpenNow {
         }catch(IOException e){
             System.out.println(e);
         }
-        return "";
+        return false;
     }
 
     private static boolean checkBeforeReadFile(File file){
@@ -61,16 +66,98 @@ public class IsOpenNow {
                 return true;
             }
         }
-
         return false;
     }
 
-    public static boolean isOpenNow(){
-        //Get the current time
-        Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        return isOpenNow(dayOfWeek, hour);
+    //営業日の営業時間の出力
+    public static int[] openHour(String str[]) {
+        int i, k = 0;
+        int openHour[] = new int[6];
+        for (i = 0; str[i] != null; i++) {
+            if (str[i].equals("open time")) {
+                int raw = i + 1;
+                while (str[raw].compareToIgnoreCase("close day") != 0) {
+                    openHour[k] = Integer.parseInt(str[raw]);
+                    System.out.println(openHour[k]);
+                    k++;
+                    raw++;
+                }
+            }
+        }
+        return openHour;
+    }
+
+    //閉店日の出力
+    public static int[] close(String str[]){
+        int i;
+        int closeDayOfWeek[];
+        int closeDay[] = new int[8];
+        for(i= 0;i < 8;i++){
+            closeDay[i]=0;
+        }
+        for(i =0;  str[i] != null;i++){
+            if(str[i].equals("close day")){
+                int raw = i+1;
+                int day = 0;
+                int q =0;
+                while (str[raw]!=null) {
+                    closeDayOfWeek = changeDays(str[raw]);
+                    for(day=0;closeDayOfWeek[day]!=0;day++) {
+                        closeDay[q]=closeDayOfWeek[day];
+                        System.out.println(closeDay[q]);
+                        q++;
+                    }
+                    raw++;
+                }
+            }
+        }
+        return closeDay;
+    }
+
+
+    //テキストの閉店日の情報を数字に変換
+    public static int[] changeDays(String str){
+        int closeDayOfWeek[] = new int[8];
+        int i;
+        for(i=0;i<8;i++){
+            closeDayOfWeek[i]=0;
+        }
+        if (str.equals("Sunday")) {
+            closeDayOfWeek[0] = 1;
+
+        } else if (str.equals("Monday")) {
+            closeDayOfWeek[0] = 2;
+
+        } else if (str.equals("Tuesday")) {
+            closeDayOfWeek[0] = 3;
+
+        } else if (str.equals("Wednesday")) {
+            closeDayOfWeek[0] = 4;
+
+        } else if (str.equals("Thursday")) {
+            closeDayOfWeek[0] = 5;
+
+        } else if (str.equals("Friday")) {
+            closeDayOfWeek[0] = 6;
+
+        }
+        else if (str.equals("Saturday")) {
+            closeDayOfWeek[0] = 7;
+
+        }else if (str.equals("Weekend")) {
+            closeDayOfWeek[0] = 7;
+            closeDayOfWeek[1] = 1;
+
+        }else if (str.equals("Weekday")) {
+            closeDayOfWeek[0] = 2;
+            closeDayOfWeek[1] = 3;
+            closeDayOfWeek[2] = 4;
+            closeDayOfWeek[3] = 5;
+            closeDayOfWeek[4] = 6;
+        }
+
+            return closeDayOfWeek;
+
     }
 
 }

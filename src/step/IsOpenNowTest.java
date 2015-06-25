@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
 public class IsOpenNowTest {
     @Test
     public void testisOpenNow(){
-        //assertTrue(IsOpenNow.isOpenNow(Calendar.MONDAY, 9));
+        assertTrue(IsOpenNow.isOpenNow(2, 9));
         //assertFalse(IsOpenNow.isOpenNow(Calendar.MONDAY, 8));
-        assertTrue(IsOpenNow.fileOpen());
+        //assertTrue(IsOpenNow.fileOpen(2,10));
     }
 }
